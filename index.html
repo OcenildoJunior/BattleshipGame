@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Last Colony</title>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/game.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/multiplayer.js" type="text/javascript" charset="utf-8"></script>
+		
+	</head>
+	<body>
+	    <div id="gamecontainer">
+	        <div id="gamestartscreen" class="gamelayer">
+	            <span id="multiplayer" onclick = "multiplayer.start();">Multiplayer</span><br>
+	        </div>
+			<div id="multiplayerlobbyscreen" class="gamelayer">
+			    <select id="multiplayergameslist" size="10">
+			    </select>
+			    <input type="button" id="multiplayerjoin" onclick="multiplayer.join();">
+			    <input type="button" id="multiplayercancel" onclick="multiplayer.cancel();">
+			</div>	
+	    </div>
+	</body>
+</html>
