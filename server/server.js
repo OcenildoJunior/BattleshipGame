@@ -14,6 +14,7 @@ var wsServer = new WebSocketServer({
     httpServer:server,
     autoAcceptConnections: false        
 });
+
 // Verifica se o request funcionou e retorna
 function connectionIsAllowed(request){ 
     return true;
@@ -49,21 +50,27 @@ wsServer.on('request',function(request){
 	connection.on('message', function(message) {
 	    if (message.type === 'utf8') {
 	        var clientMessage = JSON.parse(message.utf8Data);
+
 	        switch (clientMessage.type){
 	            case "join_room":
 	                var room = joinRoom(player,clientMessage.roomId);
+
 	                sendRoomListToEveryone();
+
 	                if(room.players.length == 2){
 	                    startGame(room);
 	                }
 	                break;                
 	            case "leave_room":
 	                leaveRoom(player,clientMessage.roomId);
+
 	                sendRoomListToEveryone();
+
 	                break;    
 				case "lose_game": // Implementar junto ao start.js
-					endGame(player.room, "The "+ player.color +" team has been defeated.");                
-					break;                                                                                                                                                                             
+					endGame(player.room, "The "+ player.color +" team has been defeated.");      
+
+					break;
 	        }
 	    }
 	});
@@ -95,21 +102,34 @@ wsServer.on('request',function(request){
 
 function sendRoomList(connection){
     var status = [];
+
     for (var i=0; i < gameRooms.length; i++) {
         status.push(gameRooms[i].status);
     };
-    var clientMessage = {type:"room_list",status:status};
+
+    var clientMessage = {
+        type: "room_list",
+        status: status
+    };
+
     connection.send(JSON.stringify(clientMessage));
 }
 
 function sendRoomListToEveryone(){
     // Notifica todos os jogadores o status da sala
     var status = [];
+
     for (var i=0; i < gameRooms.length; i++) {
         status.push(gameRooms[i].status);
     };
-    var clientMessage = {type:"room_list",status:status};
+
+    var clientMessage = {
+        type: "room_list",
+        status: status
+    };
+
     var clientMessageString = JSON.stringify(clientMessage);
+
     for (var i=0; i < players.length; i++) {
         players[i].connection.send(clientMessageString);
     };
@@ -117,10 +137,13 @@ function sendRoomListToEveryone(){
 
 function joinRoom(player,roomId){
     var room = gameRooms[roomId-1];
+
     console.log("Adding player to room",roomId);
     // Adicionando o player a sala
     room.players.push(player);
+
     player.room = room;        
+
     // Atualizando o status da sala
     if(room.players.length == 1){
         room.status = "waiting";
@@ -129,14 +152,22 @@ function joinRoom(player,roomId){
         room.status = "starting";
         player.color = "yellow";
     }
+
     // Confirmação 
-    var confirmationMessageString = JSON.stringify({type:"joined_room", roomId:roomId, color:player.color});
+    var confirmationMessageString = JSON.stringify({
+        type: "joined_room", 
+        roomId: roomId, 
+        color: player.color
+    });
+
     player.connection.send(confirmationMessageString);
+
     return room;
 }
 
 function leaveRoom(player,roomId){
     var room = gameRooms[roomId-1];
+
     console.log("Removing player from room",roomId);
      
     for (var i = room.players.length - 1; i >= 0; i--){
@@ -144,7 +175,9 @@ function leaveRoom(player,roomId){
             room.players.splice(i,1);
         }
     };
+
     delete player.room;
+
     // Atualizando o status da sala
     if(room.players.length == 0){
         room.status = "empty";    
@@ -155,18 +188,25 @@ function leaveRoom(player,roomId){
 
 function startGame(room){
     console.log("Both players are ready. Starting game in room",room.roomId);
+
     room.status = "running";
+
     sendRoomListToEveryone();
+
     // Notificando os jogadores quando o jogo começa
-    sendRoomWebSocketMessage(room,{type:"start_game"});
+    sendRoomWebSocketMessage(room, {
+        type:"start_game"
+    });
+
     //função para parar o jogo em 3seg
     setTimeout(function() {
         endGame(room);
-}, 3000);
+    }, 3000);
 }
 
 function sendRoomWebSocketMessage(room,messageObject){
     var messageString = JSON.stringify(messageObject);
+
     for (var i = room.players.length - 1; i >= 0; i--){
         room.players[i].connection.send(messageString);
     }; 
@@ -174,11 +214,17 @@ function sendRoomWebSocketMessage(room,messageObject){
 
 function endGame(room){
     clearInterval(room.interval);
+
     room.status = "empty";
-    sendRoomWebSocketMessage(room,{type:"end_game"})
+
+    sendRoomWebSocketMessage(room, {
+        type: "end_game"
+    })
+
     for (var i = room.players.length - 1; i >= 0; i--){
         leaveRoom(room.players[i],room.roomId);        
     };     
+
     sendRoomListToEveryone();
 }
 
