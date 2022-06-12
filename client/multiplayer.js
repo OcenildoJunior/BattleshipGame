@@ -1,6 +1,7 @@
 var multiplayer = {
 	websocket_url:"ws://localhost:8080/",
 	websocket:undefined,
+	currentRoom: undefined,
 	statusMessages:{
 			'starting':'Game Starting',
 			'running':'Game in Progress',
@@ -75,13 +76,25 @@ var multiplayer = {
 	},
 	updateRoomStatus:function(status){
 		console.log("Entrou em updateRoomStatus");
+		console.log("Status: " + status);
 
 		var $list = $("#multiplayergameslist");
 		$list.empty();
 
 		for (var i=0; i < status.length; i++) {
-				var key = "Game "+(i+1)+". "+this.statusMessages[status[i]];            
-				$list.append($("<option></option>").attr("disabled",status[i]== "running"||status[i]== "starting").attr("value", (i+1)).text(key).addClass(status[i]).attr("selected", (i+1)== multiplayer.roomId));
+				var key = "Game " + (i+1) + ". " + this.statusMessages[status[i]];
+
+				$list
+				.append($("<option></option>")
+				.attr("disabled", status[i] == "running" || status[i] == "starting")
+				.attr("value", (i+1))
+				.text(key)
+				.addClass(status[i])
+				.attr("selected", (i+1) == multiplayer.roomId));
+
+				if (status[i] == "running" && (i + 1 == this.currentRoom)) {
+					location.assign("/client/game-match.html")
+				}
 		};    
 	},
 	join:function(){
@@ -89,8 +102,14 @@ var multiplayer = {
 
 		var selectedRoom = document.getElementById('multiplayergameslist').value;
 
+		this.currentRoom = selectedRoom;
+
 		if(selectedRoom){            
-				multiplayer.sendWebSocketMessage({type:"join_room",roomId:selectedRoom});    
+				multiplayer.sendWebSocketMessage({
+					type: "join_room",
+					roomId: selectedRoom
+				});
+
 				document.getElementById('multiplayergameslist').disabled = true;
 				document.getElementById('multiplayerjoin').disabled = true;        
 		} else {
@@ -99,9 +118,16 @@ var multiplayer = {
 	}, 
 	cancel:function(){
 		if(multiplayer.roomId){			
-			multiplayer.sendWebSocketMessage({type:"leave_room",roomId:multiplayer.roomId});
+			multiplayer.sendWebSocketMessage({
+				type: "leave_room",
+				roomId: multiplayer.roomId
+			});
+
 			document.getElementById('multiplayergameslist').disabled = false;
 			document.getElementById('multiplayerjoin').disabled = false;
+
+			this.currentRoom = undefined;
+
 			delete multiplayer.roomId;
 			delete multiplayer.color;
 			return;
