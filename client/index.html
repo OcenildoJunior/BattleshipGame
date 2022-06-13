@@ -2,14 +2,14 @@
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>Last Colony</title>
+		<title>Batalha naval</title>
 		<script src="jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="game.js" type="text/javascript" charset="utf-8"></script>
 		<script src="multiplayer.js" type="text/javascript" charset="utf-8"></script>
-		
+		<link rel="stylesheet" href="styles.css" type="text/css">
 	</head>
 	<body>
-	    <div id="gamecontainer">
+	    <div id="gamecontainer" class="container">
 	        <div id="gamestartscreen" class="gamelayer">
 	            <span id="multiplayer" onclick = "multiplayer.start();">Multiplayer</span><br>
 	        </div>
@@ -19,6 +19,11 @@
 			    <button type="button" id="multiplayerjoin" onclick="multiplayer.join();">Join</button>
 			    <button type="button" id="multiplayercancel" onclick="multiplayer.cancel();">Cancel</button>
 			</div>	
+			<div id="gameinterfacescreen" class="tabuleiro">
+				<p>tabuleiro</p>
+			
+			</div>
 	    </div>
+
 	</body>
 </html>

@@ -2,8 +2,24 @@
 var game = {
     start:function(){
 		console.log("Entrou na Start");
-        $('.gamelayer').hide();
-		$('#gameinterfacescreen').show();
-		game.running = true;       
+          $('.gamelayer').hide();
+		    $('#gameinterfacescreen').show();
+        
+    
+        
+        
+		  game.running = true;       
     },	
+
+
+	
+
+    typesBoat:{
+			'porta-aviões':'',
+			'encouraçado':'',
+			'submarinos':'',
+			'cruzadores':''
+	  },
+
+
 }

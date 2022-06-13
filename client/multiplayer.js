@@ -16,6 +16,25 @@ var multiplayer = {
 			game.showMessageBox("Your browser does not support WebSocket. Multiplayer will not work.");
 			return;
 		}
+		// Criação do tabuleiro
+		i
+		const tabuleiroDOM = document.querySelector("#gameinterfacescreen");
+		var tabuleiro = new Array();
+
+		for (var i=0; i < 10; i++) {
+			tabuleiro[i] = new Array();
+			for (var j=0; j < 10; j++) {
+				tabuleiro[i][j] = new Array();
+				let quadrado = document.createElement('div');
+				quadrado.setAttribute("id",`i${i}j${j}`);
+				quadrado.setAttribute("class", "quadrado");
+				tabuleiroDOM.appendChild(quadrado);
+
+				quadrado.style.backgroundColor = "blue";
+				quadrado.innerHTML = `${i},${j}`
+			};
+		};
+		console.log(tabuleiro);
 
 		this.websocket = new WebSocketObject(this.websocket_url);
 
@@ -68,11 +87,13 @@ var multiplayer = {
 						break;        
 			}        
 	},
+	
 	sendWebSocketMessage:function(messageObject){
 		this.websocket.send(JSON.stringify(messageObject));
 
 		console.log(messageObject);
 	},
+
 	updateRoomStatus:function(status){
 		console.log("Entrou em updateRoomStatus");
 
@@ -199,7 +220,8 @@ var multiplayer = {
 	    // fog.initLevel();
 	    // game.animationLoop();                                
 	    // multiplayer.animationInterval = setInterval(multiplayer.tickLoop, game.animationTimeout);
-	    // game.start();                
+	    game.start();    
+
 	},
 	sendCommand:function(uids,details){
 	    multiplayer.sentCommandForTick = true;
@@ -241,7 +263,7 @@ var multiplayer = {
 
 	    clearInterval(multiplayer.animationInterval);
 
-	    game.showMessageBox(reason,multiplayer.closeAndExit);
+	   game.showMessageBox(reason,multiplayer.closeAndExit);
 	}
 };
 
