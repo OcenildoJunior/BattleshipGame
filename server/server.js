@@ -71,6 +71,13 @@ wsServer.on('request',function(request){
 					endGame(player.room, "The "+ player.color +" team has been defeated.");      
 
 					break;
+
+                case "fire":
+                    const id = clientMessage.shotFired;
+                
+                    console.log(`Shot fired on`, id)             
+
+					break;
 	        }
 	    }
 	});

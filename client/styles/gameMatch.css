@@ -1,0 +1,49 @@
+.game-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  height: 100vh;
+  width: 100vw;
+}
+
+.container-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board-grid {
+  margin: 4vmin;
+  display: grid;
+  background-color: hsl(0, 0%, 84%);
+  grid-template-rows: repeat(10, 4.6vmin);
+  grid-template-columns: repeat(10, 4.6vmin);
+}
+
+.board-grid div {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.field {
+  cursor: pointer;
+  
+  height: 30px;
+  width: 30px;
+
+  border-style: solid;
+  border-width: 1px;
+}
+
+.strike {
+  background-color: red;
+}
+
+.border {
+  background-color: gray;
+}
+
+.water {
+  background-color: blue;
+}

@@ -2,15 +2,24 @@
 <html>
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="./styles/gameMatch.css" media="screen" />
 		<title>Game Match</title>
 		<script src="jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="game.js" type="text/javascript" charset="utf-8"></script>
 		<script src="multiplayer.js" type="text/javascript" charset="utf-8"></script>
-		
+		<script src="app.js" charset="utf-8"></script>
 	</head>
 	<body>
-	    <div id="gamecontainer">
-	        GameMatch
-	    </div>
+	    <div class="game-container">
+				<div class="container-board">
+					<div class="board-grid grid-user"></div>
+					<div>Your grid</div>
+				</div>
+
+				<div class="container-board">
+					<div class="board-grid grid-opponent"></div>
+					<div>Opponnet's grid</div>
+				</div>
+			</div>
 	</body>
 </html>
