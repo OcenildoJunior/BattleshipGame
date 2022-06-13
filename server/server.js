@@ -4,7 +4,9 @@ var http = require('http');
 var server = http.createServer(function(request,response){
     response.writeHead(200, {'Content-Type': 'text/plain'});
     response.end("This is the node.js HTTP server.");
+    
 });
+
 
 server.listen(8080,function(){
     console.log('Server has started listening on port 8080');
@@ -27,6 +29,8 @@ for (var i=0; i < 10; i++) {
 };
 
 var players = [];
+
+
 wsServer.on('request',function(request){
     if(!connectionIsAllowed(request)){
         request.reject();
@@ -99,6 +103,11 @@ wsServer.on('request',function(request){
 
 	});
 });
+
+
+function createBoard() {
+
+}
 
 function sendRoomList(connection){
     var status = [];
@@ -199,14 +208,14 @@ function startGame(room){
     });
 
     //função para parar o jogo em 3seg
-    setTimeout(function() {
-        endGame(room);
-    }, 3000);
+    // setTimeout(function() {
+    //     endGame(room);
+    // }, 3000);
 }
 
 function sendRoomWebSocketMessage(room,messageObject){
     var messageString = JSON.stringify(messageObject);
-
+    console.log(messageString)
     for (var i = room.players.length - 1; i >= 0; i--){
         room.players[i].connection.send(messageString);
     }; 
