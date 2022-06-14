@@ -3,11 +3,7 @@ var game = {
     start:function(){
 		console.log("Entrou na Start");
           $('.gamelayer').hide();
-		    $('#gameinterfacescreen').show();
-        
-    
-        
-        
+		    $('#gameinterfacescreen').show();  
 		  game.running = true;       
     },	
 

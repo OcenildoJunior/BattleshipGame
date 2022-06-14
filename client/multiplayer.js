@@ -33,9 +33,9 @@ var multiplayer = {
 				quadrado.style.backgroundColor = "blue";
 				quadrado.innerHTML = `${i},${j}`
 				
-				quadrado.addEventListener('click', () =>{
-					quadrado.val
-				})
+				// quadrado.addEventListener('click', () =>{
+				// 	quadrado.val
+				// })
 			};
 		};
 		
