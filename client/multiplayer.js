@@ -11,33 +11,38 @@ var multiplayer = {
 	start:function(){
 		game.type = "multiplayer";
 		var WebSocketObject = window.WebSocket || window.MozWebSocket;
-
+		
 		if (!WebSocketObject){
 			game.showMessageBox("Your browser does not support WebSocket. Multiplayer will not work.");
 			return;
 		}
 		// Criação do tabuleiro
-		i
 		const tabuleiroDOM = document.querySelector("#gameinterfacescreen");
 		var tabuleiro = new Array();
 
+		
 		for (var i=0; i < 10; i++) {
 			tabuleiro[i] = new Array();
 			for (var j=0; j < 10; j++) {
 				tabuleiro[i][j] = new Array();
-				let quadrado = document.createElement('div');
+				const quadrado = document.createElement('div');
 				quadrado.setAttribute("id",`i${i}j${j}`);
 				quadrado.setAttribute("class", "quadrado");
 				tabuleiroDOM.appendChild(quadrado);
-
+				
 				quadrado.style.backgroundColor = "blue";
 				quadrado.innerHTML = `${i},${j}`
+				
+				quadrado.addEventListener('click', () =>{
+					quadrado.val
+				})
 			};
 		};
+		
 		console.log(tabuleiro);
-
+		
 		this.websocket = new WebSocketObject(this.websocket_url);
-
+		
 		this.websocket.onmessage = multiplayer.handleWebSocketMessage;
 
 		this.websocket.onopen = function(){			
@@ -45,11 +50,11 @@ var multiplayer = {
 			$('#gameinterfacescreen').hide();
 			$('#multiplayerlobbyscreen').show();	
 		}
-	
+		
 		this.websocket.onclose = function(){			
 			multiplayer.endGame("Error connecting to server.");
 		}
-	
+		
 		this.websocket.onerror = function(){			
 			multiplayer.endGame("Error connecting to server.");
 		}
@@ -57,7 +62,7 @@ var multiplayer = {
 	handleWebSocketMessage:function(message){
 			var messageObject = JSON.parse(message.data);
 			switch (messageObject.type){
-					case "room_list":
+				case "room_list":
 							multiplayer.updateRoomStatus(messageObject.status);
 							break;    
 				case "joined_room":
