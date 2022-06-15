@@ -10,9 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const width = 10
   const userSquares = []
   const opponentSquares = []
-
+  const idBarco = [7]
   createBoard(userGrid, userSquares, width)
   createBoard(opponentGrid, opponentSquares, width)
+  
+  var count = 0;
+  userSquares.forEach(square => {
+    square.addEventListener('click', () => {
+
+      count++;
+      if(currentPlayer === 'user' && count <= 7) {
+        shotFired = square.dataset.id
+        
+        idBarco.push(shotFired)
+        
+        square.style.backgroundColor = 'blue';
+        square.style.pointerEvents = 'none';
+        
+        console.log(shotFired, idBarco, count );
+      }
+    })
+  })
 
   // 'EventListener' no campo adversário para enviar a informação para o servidor
   opponentSquares.forEach(square => {
@@ -20,11 +38,18 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log("here 1");
       if(currentPlayer === 'user') {
         shotFired = square.dataset.id
-
-        sendWebSocketMessage({
-          type: "fire",
-					shotFired: shotFired
-        })
+        
+        if(idBarco.indexOf(shotFired) > -1) {
+          sendWebSocketMessage({
+            type: "fire-reply",
+            shotFired: shotFired
+          })
+         } else {
+          sendWebSocketMessage({
+            type: "fire",
+            shotFired: shotFired
+          })
+        }
       }
     })
   })
