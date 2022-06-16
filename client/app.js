@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //  console.log(players.color)
         sendWebSocketMessage({
           vida: vida,
-          barcos: localBarcos
+          barcos: qtdBarco
         })
       }
       
@@ -126,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       break;
     }        
   }
+
 
   function sendWebSocketMessage(messageObject) {
 		websocket.send(JSON.stringify(messageObject));
