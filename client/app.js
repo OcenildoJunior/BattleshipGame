@@ -1,58 +1,89 @@
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const userGrid = document.querySelector('.grid-user')
   const opponentGrid = document.querySelector('.grid-opponent')
-  
+  const turnDisplay = document.querySelector('#whose-go')
+
   const websocket_url = "ws://localhost:8080/"
 	let websocket = undefined
 
-  let currentPlayer = 'user'
+  let currentPlayer = 'user' 
 
   const width = 10
   const userSquares = []
   const opponentSquares = []
-  const idBarco = [7]
+  const qtdBarco = []
+  var vida = 7
   createBoard(userGrid, userSquares, width)
   createBoard(opponentGrid, opponentSquares, width)
   
   var count = 0;
+
   userSquares.forEach(square => {
     square.addEventListener('click', () => {
-
       count++;
-      if(currentPlayer === 'user' && count <= 7) {
+      const localBarcos = []
+      if(currentPlayer === 'user' && count <= vida) {
         shotFired = square.dataset.id
         
-        idBarco.push(shotFired)
+        qtdBarco.push(shotFired)
         
-        square.style.backgroundColor = 'blue';
+        square.style.backgroundColor = 'green';
         square.style.pointerEvents = 'none';
         
-        console.log(shotFired, idBarco, count );
+      //  console.log(shotFired, qtdBarco, count );
+      //  console.log(players.color)
+        sendWebSocketMessage({
+          vida: vida,
+          barcos: localBarcos
+        })
       }
+      
     })
   })
-
+  
   // 'EventListener' no campo adversário para enviar a informação para o servidor
   opponentSquares.forEach(square => {
     square.addEventListener('click', () => {
-      console.log("here 1");
+      square.style.pointerEvents = 'none';
+
       if(currentPlayer === 'user') {
-        shotFired = square.dataset.id
-        
-        if(idBarco.indexOf(shotFired) > -1) {
+        sendWebSocketMessage({
+          barcos: qtdBarco
+        })
+        if(qtdBarco.indexOf(square.dataset.id) > -1 && qtdBarco.length === 7) {
+          square.style.backgroundColor = 'red';
+    
           sendWebSocketMessage({
             type: "fire-reply",
-            shotFired: shotFired
-          })
-         } else {
+            shotFired: shotFired,
+            vida: vida--    
+          });
+        } else if(qtdBarco.length === 7 && vida >= 1){
+          square.style.backgroundColor = 'blue';
           sendWebSocketMessage({
             type: "fire",
-            shotFired: shotFired
-          })
+            shotFired: shotFired,
+          });
+        shotFired = square.dataset.id
+        count = 0
         }
+        
       }
-    })
-  })
+    });
+  });
+  function turnGame() {
+
+    if(enemyReady) {
+      if(currentPlayer === 'user') {
+        turnDisplay.innerHTML = 'Sua vez'
+
+      } else if(currentPlayer === 'enemy') {
+        turnDisplay.innerHTML = "Vez do inimigo"
+      }
+    }
+  }
 
   function startGame() {
     var WebSocketObject = window.WebSocket || window.MozWebSocket;
@@ -98,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function sendWebSocketMessage(messageObject) {
 		websocket.send(JSON.stringify(messageObject));
-
+    
 		console.log(messageObject);
 	}
 

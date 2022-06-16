@@ -26,7 +26,7 @@ for (var i=0; i < 10; i++) {
     gameRooms.push({status:"empty",players:[],roomId:i+1});
 };
 
-var players = [];
+ var players = [];
 wsServer.on('request',function(request){
     if(!connectionIsAllowed(request)){
         request.reject();
@@ -47,6 +47,15 @@ wsServer.on('request',function(request){
     // Enviando a lista de salas ao primeiro jogador conectado
     sendRoomList(connection);
 
+
+   
+	connection.on('click', function(event) {
+        var text = "";
+        var msg = JSON.parse(event.data);
+        console.log(msg);
+
+    })
+    
 	connection.on('message', function(message) {
 	    if (message.type === 'utf8') {
 	        var clientMessage = JSON.parse(message.utf8Data);
@@ -80,7 +89,9 @@ wsServer.on('request',function(request){
 					break;
 	        }
 	    }
-	});
+        
+        
+    });
 
     connection.on('close', function(reasonCode, description) {
 	    console.log('Connection from ' + request.remoteAddress + ' disconnected.');
@@ -106,6 +117,17 @@ wsServer.on('request',function(request){
 
 	});
 });
+
+function iniciarEvent() {
+    ws.addEventListener("message", ({ data }) => {
+      const packet = JSON.parse(data);
+      console.log(packet);
+    })
+}
+
+function recebeBarcos() {
+        
+}
 
 function sendRoomList(connection){
     var status = [];
@@ -154,7 +176,7 @@ function joinRoom(player,roomId){
     // Atualizando o status da sala
     if(room.players.length == 1){
         room.status = "waiting";
-        player.color = "red";
+        player.color = "green";
     } else if (room.players.length == 2){
         room.status = "starting";
         player.color = "yellow";
