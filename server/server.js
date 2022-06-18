@@ -1,5 +1,6 @@
 var WebSocketServer = require('websocket').server;
 var http = require('http');
+
 //Criando um server web
 var server = http.createServer(function(request,response){
     response.writeHead(200, {'Content-Type': 'text/plain'});
@@ -26,7 +27,10 @@ for (var i=0; i < 10; i++) {
     gameRooms.push({status:"empty",players:[],roomId:i+1});
 };
 
- var players = [];
+// var playerGame = []
+
+var players = [];
+
 wsServer.on('request',function(request){
     if(!connectionIsAllowed(request)){
         request.reject();
@@ -46,9 +50,7 @@ wsServer.on('request',function(request){
 
     // Enviando a lista de salas ao primeiro jogador conectado
     sendRoomList(connection);
-
-
-   
+    
 	connection.on('click', function(event) {
         var text = "";
         var msg = JSON.parse(event.data);
@@ -61,6 +63,43 @@ wsServer.on('request',function(request){
 	        var clientMessage = JSON.parse(message.utf8Data);
 
 	        switch (clientMessage.type){
+                // Para a partida
+                case "shot":
+                    const shotId = clientMessage.shotFired;
+                    const idPlayerShot = clientMessage.playerShot;
+                
+                    console.log(`Shot fired on`, shotId, "/ By id:", idPlayerShot)  
+
+                    for (var i = 0; i < players.length; i++) {
+                        players[i].connection.send(JSON.stringify({
+                            type: "shot-received",
+                            shotFired: shotId,
+                            playerShot: idPlayerShot
+                        }));
+                    };
+			    break;
+                case "shot-reply":
+                    const shot = clientMessage.shotFired;
+                    const result = clientMessage.result;
+                    const idPlayer = clientMessage.playerShot;
+
+                    for (var i = 0; i < players.length; i++) {
+                        players[i].connection.send(JSON.stringify({
+                            type: "shot-reply",
+                            shotFired: shot,
+                            result: result,
+                            playerShot: idPlayer
+                        }));
+                    };
+                break;
+                // // Para possivelmente tratar os ids dos players
+                // case "getPlayerId":
+                //     console.log(clientMessage.playerId);
+
+                //     playerGame.push(clientMessage.playerId)
+                // break
+
+                // Para o lobby
 	            case "join_room":
 	                var room = joinRoom(player,clientMessage.roomId);
 
@@ -69,28 +108,19 @@ wsServer.on('request',function(request){
 	                if(room.players.length == 2){
 	                    startGame(room);
 	                }
+	            break;                
 	                break;                
+	            break;                
 	            case "leave_room":
 	                leaveRoom(player,clientMessage.roomId);
 
 	                sendRoomListToEveryone();
-
-	                break;    
+	            break;
 				case "lose_game": // Implementar junto ao start.js
 					endGame(player.room, "The "+ player.color +" team has been defeated.");      
-
-					break;
-
-                case "fire":
-                    const id = clientMessage.shotFired;
-                
-                    console.log(`Shot fired on`, id)             
-
-					break;
+			    break;
 	        }
 	    }
-        
-        
     });
 
     connection.on('close', function(reasonCode, description) {
