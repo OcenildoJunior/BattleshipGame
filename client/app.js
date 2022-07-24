@@ -190,7 +190,7 @@ var multiplayer = {
 				.attr("selected", (i+1) == multiplayer.roomId));
 
 				if (status[i] == "running" && (i + 1 == this.currentRoom)) {
-					location.assign("/client/game-match.html")
+					location.assign("./game-match.html")
 				}
 		};    
 	},
